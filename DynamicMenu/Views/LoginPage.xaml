@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DynamicMenu.Views.LoginPage"
+             Title="LoginPage"
+             xmlns:viewmodels="clr-namespace:DynamicMenu.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:DynamicMenu.Models;assembly=DynamicMenu"
+             x:DataType="viewmodels:LoginViewModel"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False"
+             >
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding AppearingCommand}"/>
+    </ContentPage.Behaviors>
+
+    <StackLayout VerticalOptions="Center" Padding="10">
+
+        <Label Text="Available names:" FontSize="12" FontAttributes="Bold" Margin="0, 0, 0, 10" TextColor="{StaticResource Primary}" />
+
+        <!-- list of available usernames -->
+        <!-- BUG: when RefreshView is used, Collection always takes up all vertical space instead of only taking as much as its items.-->
+        <RefreshView Command="{Binding ReloadUsersCommand}" IsRefreshing="{Binding IsRefreshing}">
+
+            <!-- Frame creates margin and border around the control -->
+            <Frame BackgroundColor="{StaticResource InputGrey}" Padding="4,4,4,4">
+                
+                <CollectionView ItemsSource="{Binding AvailableUsers}"
+                                Margin="10"
+                        VerticalOptions="Center"
+                        HorizontalOptions="CenterAndExpand"
+                        SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:User">
+                            <Label Text="{Binding Name}" Padding="10,4" BackgroundColor="{StaticResource Secondary}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        No items
+                        <!-- BUG: UI element content doesn't work on Android: https://github.com/dotnet/maui/issues/10819: -->
+                        <!-- <Label Text="No items" />-->
+                    </CollectionView.EmptyView>
+                </CollectionView>
+                
+            </Frame>
+        </RefreshView>
+
+        <Entry Text="{Binding Name}" WidthRequest="200" Placeholder="Name">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior EventName="TextChanged" Command="{Binding NameChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+
+        <Button Text="Login" Command="{Binding LoginCommand}"/>
+
+        <Label Text="Invalid name" TextColor="Red" IsVisible="{Binding UnknownUsernameTextVisible}"/>
+
+    </StackLayout>
+</ContentPage>

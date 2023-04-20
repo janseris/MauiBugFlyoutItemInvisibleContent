@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="DynamicMenu.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:DynamicMenu"
+    xmlns:views="clr-namespace:DynamicMenu.Views"
+    xmlns:viewmodels="clr-namespace:DynamicMenu.ViewModels"
+    x:DataType="viewmodels:AppShellViewModel"
+    >
+
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout Padding="20, 14">
+            <Label Text="User name:" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+            <Label Text="{Binding UserName}"/>
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+    
+    <!-- ShellContent is supposed to be equivalent 
+         to FlyoutItem containing ShellContent 
+         or to FlyoutItem with a Tab inside containing ShellContent
+         but then the menu item text is invisible -->
+
+    <FlyoutItem FlyoutItemIsVisible="False">
+        <Tab>
+            <ShellContent
+                Title="Login"
+                ContentTemplate="{DataTemplate views:LoginPage}"
+                Route="LoginPage"/>
+        </Tab>
+    </FlyoutItem>
+
+    <FlyoutItem IsVisible="{Binding ArcheologieMenuButtonVisible}">
+        <Tab>
+            <ShellContent
+                Title="Archeologie"
+                ContentTemplate="{DataTemplate views:ArcheologiePage}"
+                Route="ArcheologiePage"/>
+        </Tab>
+    </FlyoutItem>
+
+    <FlyoutItem IsVisible="{Binding BozpMenuButtonVisible}">
+        <Tab>
+            <ShellContent
+                Title="BOZP"
+                ContentTemplate="{DataTemplate views:BozpPage}"
+                Route="BozpPage"/>
+        </Tab>
+    </FlyoutItem>
+
+    <FlyoutItem IsVisible="{Binding MonitoringMenuButtonVisible}">
+        <Tab>
+            <ShellContent
+                Title="Monitoring"
+                ContentTemplate="{DataTemplate views:MonitoringPage}"
+                Route="MonitoringPage"/>
+        </Tab>
+    </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <Button Margin="20" Text="Logout" Command="{Binding LogoutCommand}"/>
+    </Shell.FlyoutFooter>
+
+</Shell>
